@@ -47,6 +47,7 @@ func (myres *myresponse) returnerr(k int) string {
 }
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
+	listAPIKey := []string{"Pldlpwx4sLK5za9LJRpbbSVg2wcVCMtD", "YANs1Rb1TyXZh9uXupI0NDk24qXCIGtZ", "7dRvL89TCyEtr8Zz6WQS3Sikv123Mtba", "ktmLa3q7wqsNgZX2PSvDI3IVxY5zXBuX", "cg1OjiLWYCI9G6GVMvduKl5jA0BwyyPo"}
 	if r.Method == "POST" {
 		var myres myresponse
 		//fmt.Println(base64Decode(r.Header.Get("data")))
@@ -59,24 +60,30 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, myres.returnerr(2))
 			return
 		}
-		req.Header.Add("api_key", "ktmLa3q7wqsNgZX2PSvDI3IVxY5zXBuX")
-		req.Header.Add("cache-control", "no-cache")
-		req.Header.Add("postman-token", "8845e06b-a5d5-50e5-2738-7fee3b251d68")
-		
-		res, err6 := http.DefaultClient.Do(req)
-		if err6 != nil { //9
-			fmt.Fprintf(w, myres.returnerr(9))
-			return
+		var locs myjsonstruct
+
+		for index, key := range listAPIKey {
+			req.Header.Add("api_key", key)
+			req.Header.Add("cache-control", "no-cache")
+			req.Header.Add("postman-token", "8845e06b-a5d5-50e5-2738-7fee3b251d68")
+			res, err6 := http.DefaultClient.Do(req)
+			if err6 != nil { //9
+				if index != len(listAPIKey)-1 {
+					continue
+				}
+				fmt.Fprintf(w, myres.returnerr(9))
+				return
+			}
+			defer res.Body.Close()
+			body, err7 := ioutil.ReadAll(res.Body)
+			if err7 != nil {
+				fmt.Fprintf(w, myres.returnerr(2))
+				return
+			}
+			json.Unmarshal(body, &locs)
+			break
 		}
 
-		defer res.Body.Close()
-		body, err7 := ioutil.ReadAll(res.Body)
-		if err7 != nil {
-			fmt.Fprintf(w, myres.returnerr(2))
-			return
-		}
-		var locs myjsonstruct
-		json.Unmarshal(body, &locs)
 		if len(locs.Hypotheses) != 0 {
 			myres.Status = 0
 			myres.Message = locs.Hypotheses[0].Utterance
@@ -106,4 +113,3 @@ func main() {
 	http.HandleFunc("/upload", uploadFile)
 	http.ListenAndServe("0.0.0.0:8080", nil)
 }
-
