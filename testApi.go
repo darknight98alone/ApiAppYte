@@ -1,0 +1,109 @@
+package main
+
+import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+)
+
+type Hypotheses struct {
+	Confidence int    `json:"confidence"`
+	Utterance  string `json:"utterance"`
+}
+
+type myjsonstruct struct {
+	Status     int          `json:"status"`
+	Hypotheses []Hypotheses `json:"hypotheses"`
+	Id         string       `json:"id"`
+}
+
+type myjsstruct struct {
+	Content string `json:"content"`
+}
+
+type myresponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Result  string `json:"result"`
+}
+
+func (myres *myresponse) returnerr(k int) string {
+	myres.Status = k
+	myres.Result = ""
+	switch k {
+	case 1:
+		myres.Message = "Don't have sound"
+	case 2:
+		myres.Message = "Be destroyed"
+	case 9:
+		myres.Message = "Server is busy"
+	case 10:
+		myres.Message = "Don't have result"
+	}
+	b, _ := json.Marshal(myres)
+	return string(b)
+}
+
+func uploadFile(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		var myres myresponse
+		//fmt.Println(base64Decode(r.Header.Get("data")))
+		file := r.Body
+
+		url := "https://api.fpt.ai/hmi/asr/general"
+
+		req, err5 := http.NewRequest("POST", url, file)
+		if err5 != nil {
+			fmt.Fprintf(w, myres.returnerr(2))
+			return
+		}
+		req.Header.Add("api_key", "ktmLa3q7wqsNgZX2PSvDI3IVxY5zXBuX")
+		req.Header.Add("cache-control", "no-cache")
+		req.Header.Add("postman-token", "8845e06b-a5d5-50e5-2738-7fee3b251d68")
+		
+		res, err6 := http.DefaultClient.Do(req)
+		if err6 != nil { //9
+			fmt.Fprintf(w, myres.returnerr(9))
+			return
+		}
+
+		defer res.Body.Close()
+		body, err7 := ioutil.ReadAll(res.Body)
+		if err7 != nil {
+			fmt.Fprintf(w, myres.returnerr(2))
+			return
+		}
+		var locs myjsonstruct
+		json.Unmarshal(body, &locs)
+		if len(locs.Hypotheses) != 0 {
+			myres.Status = 0
+			myres.Message = locs.Hypotheses[0].Utterance
+			myres.Result = ""
+			b, err8 := json.Marshal(myres)
+			if err8 != nil {
+				fmt.Fprintf(w, myres.returnerr(2))
+				return
+			}
+			w.Header().Set("content-type", "application/json")
+			fmt.Fprintf(w, string(b))
+		} else {
+			fmt.Fprintf(w, myres.returnerr(1))
+		}
+	}
+}
+
+func base64Decode(str string) string {
+	data, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func main() {
+	http.HandleFunc("/upload", uploadFile)
+	http.ListenAndServe("0.0.0.0:8080", nil)
+}
+
