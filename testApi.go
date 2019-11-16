@@ -81,6 +81,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			json.Unmarshal(body, &locs)
+			fmt.Println("USE:", index)
 			break
 		}
 
