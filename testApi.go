@@ -47,7 +47,7 @@ func (myres *myresponse) returnerr(k int) string {
 }
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
-	listAPIKey := []string{"Pldlpwx4sLK5za9LJRpbbSVg2wcVCMtD", "YANs1Rb1TyXZh9uXupI0NDk24qXCIGtZ", "7dRvL89TCyEtr8Zz6WQS3Sikv123Mtba", "ktmLa3q7wqsNgZX2PSvDI3IVxY5zXBuX", "cg1OjiLWYCI9G6GVMvduKl5jA0BwyyPo"}
+	listAPIKey := []string{"Pldlpwx4sLK5za9LJRpbbSVg2wcVCMtD", "YANs1Rb1TyXZh9uXupI0NDk24qXCIGtZ", "7dRvL89TCyEtr8Zz6WQS3Sikv123Mtba", "ktmLa3q7wqsNgZX2PSvDI3IVxY5zXBuX", "cg1OjiLWYCI9G6GVMvduKl5jA0BwyyPo", "Flj3tR4sCWMlG7AHgN0yyBe6nWjQp94h", "QMltUM5ulCxYjfvomNgJhSieeEBpbQhB", "3GRw9uuRbMmQIBQra98MVZ7CJHaSdEYS", "WBme28eANXFEdvFCCXHC868LPZrOIX05", "Im4Qwznz450eKCXTp6p4srUYVHPCgr4D", "dMEk9pcQgD74FkVTM91tPwQYj3KGI8Qu", "86IF4IQejkU5d1je8gjyPRo3QCvhleD9", "887gP6n2JJj6a4GaX5NELczEjlIZNWbw", "D5IhpTwv8ckoNtfMdp7vlJP4KUE7OQwh", "4AOFLyJsFhadvXYboJCMmk6nWMEOj4WI", "GoxclRGQoBrAbt2qoOZlOziQrWx9gIeP", "t5ecZv4lMtrAfdtTZTDj0vzNQfgjS4dW", "69NsuGtzRPodRegNT9Yedjee6tLvYNzI", "U0hsq2cyefjaDgRR3RFCGfzGoGdwCMPJ", "gPbZTLJ5L77GyYmbfBw7pXDL5ILPV9Ae"}
 	if r.Method == "POST" {
 		var myres myresponse
 		//fmt.Println(base64Decode(r.Header.Get("data")))
