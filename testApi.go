@@ -53,14 +53,11 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	var myres myresponse
 
 	var locs myjsonstruct
-
+	file := r.Body
+	url := "https://api.fpt.ai/hmi/asr/general"
 	if r.Method == "POST" {
 		for {
 			//fmt.Println(base64Decode(r.Header.Get("data")))
-			file := r.Body
-
-			url := "https://api.fpt.ai/hmi/asr/general"
-
 			req, err5 := http.NewRequest("POST", url, file)
 			if err5 != nil {
 				fmt.Fprintf(w, myres.returnerr(2))
