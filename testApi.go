@@ -77,7 +77,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 			if res.StatusCode == 429 {
 				startindex = startindex + 1
 				fmt.Println("switch")
-				uploadFile(w, r)
+				fmt.Fprintf(w, myres.returnerr(9))
 				continue
 			}
 			if err6 != nil { //9
