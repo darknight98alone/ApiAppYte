@@ -50,21 +50,23 @@ var listAPIKey []string
 var startindex int
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
+	var myres myresponse
+
+	var locs myjsonstruct
+
 	if r.Method == "POST" {
-		var myres myresponse
-		//fmt.Println(base64Decode(r.Header.Get("data")))
-		file := r.Body
-
-		url := "https://api.fpt.ai/hmi/asr/general"
-
-		req, err5 := http.NewRequest("POST", url, file)
-		if err5 != nil {
-			fmt.Fprintf(w, myres.returnerr(2))
-			return
-		}
-		var locs myjsonstruct
-
 		for {
+			//fmt.Println(base64Decode(r.Header.Get("data")))
+			file := r.Body
+
+			url := "https://api.fpt.ai/hmi/asr/general"
+
+			req, err5 := http.NewRequest("POST", url, file)
+			if err5 != nil {
+				fmt.Fprintf(w, myres.returnerr(2))
+				return
+			}
+
 			index := startindex
 			if startindex == len(listAPIKey) {
 				fmt.Fprintf(w, "Api rate limited")
