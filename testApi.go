@@ -51,7 +51,6 @@ var startindex int
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
 	var myres myresponse
-
 	var locs myjsonstruct
 	file := r.Body
 	url := "https://api.fpt.ai/hmi/asr/general"
@@ -61,13 +60,13 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 			req, err5 := http.NewRequest("POST", url, file)
 			if err5 != nil {
 				fmt.Fprintf(w, myres.returnerr(2))
-				return
+				continue
 			}
 
 			index := startindex
 			if startindex == len(listAPIKey) {
 				fmt.Fprintf(w, "Api rate limited")
-				return
+				continue
 			}
 			key := listAPIKey[startindex]
 			req.Header.Add("api_key", key)
@@ -91,7 +90,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 			body, err7 := ioutil.ReadAll(res.Body)
 			if err7 != nil {
 				fmt.Fprintf(w, myres.returnerr(2))
-				return
+				continue
 			}
 			json.Unmarshal(body, &locs)
 			fmt.Println("USE:", index)
@@ -128,4 +127,5 @@ func main() {
 	startindex = 0
 	http.HandleFunc("/upload", uploadFile)
 	http.ListenAndServe(":9091", nil)
+	// http.ListenAndServe(":8080", nil)
 }
